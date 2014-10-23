@@ -12,9 +12,6 @@
 
 @interface ILPDFKit : CDVPlugin
 
-- (void)openPdfFromResource:(CDVInvokedUrlCommand *)command;
-- (void)openPdfFromPath:(CDVInvokedUrlCommand *)command;
-
-@property (nonatomic, strong) PDFViewController *pdfViewController;
+- (void)present:(CDVInvokedUrlCommand *)command;
 
 @end

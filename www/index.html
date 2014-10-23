@@ -31,25 +31,39 @@
     </head>
     <body>
         <div class="app">
-            <button id="openPDFFromResourceBtn">Open Pdf from resource</button>
-            <button id="openPDFFromPathBtn">Open Pdf from path</button>
+            <button id="openPDFBtn">Open Pdf</button>
+            <button id="openSavedPDFBtn">Open Saved Pdf</button>
             <script src="js/ilpdfkit.js"></script>
             <script>
-                document.getElementById("openPDFFromResourceBtn").addEventListener("click", function() {
-                                                                                   ILPDFKit.showPdfFromResource("test.pdf", function() {
-                                                                                                                    
-                                                                                                                }, function() {
-                                                                                                                    alert("Failure");
-                                                                                                                });
-                                                                                   }, false);
-                                                                                   
-                document.getElementById("openPDFFromPathBtn").addEventListener("click", function() {
-                                                                                    ILPDFKit.showPdfFromPath("pdf/test.pdf", function() {
-                                                                                                                    
-                                                                                                                }, function() {
-                                                                                                                    alert("Failure");
-                                                                                                                });
-                                                                                    }, false);
+                document.getElementById("openPDFBtn").addEventListener("click", function() {
+                                                                       var options = {"showSaveButton" : true, "fileNameToSave" : "saved.pdf"};
+                                                                       ILPDFKit.present("pdf/test.pdf", options, function(result) {
+                                                                                        
+                                                                                        }, function(error) {
+                                                                                        alert(error);
+                                                                                        });
+                                                                       ILPDFKit.addEventListener('savePdf', function(event) {
+                                                                                                 if (event.success) {
+                                                                                                 setTimeout(function(){
+                                                                                                            alert("saved to " + event.savedPath);
+                                                                                                            }, 0);
+                                                                                                 }
+                                                                                                 else {
+                                                                                                 setTimeout(function(){
+                                                                                                            alert("failed to save");
+                                                                                                            }, 0);
+                                                                                                 }
+                                                                                                 });
+                                                                       }, false);
+                
+                document.getElementById("openSavedPDFBtn").addEventListener("click", function() {
+                                                                            var options = {"useDocumentsFolder" : true, "showSaveButton" : true};
+                                                                            ILPDFKit.present("saved.pdf", options, function(result) {
+                                                                                             
+                                                                                             }, function(error) {
+                                                                                             alert(error);
+                                                                                             });
+                                                                            }, false);
             </script>
             <h1>PhoneGap</h1>
             <div id="deviceready" class="blink">
