@@ -7,11 +7,15 @@
 //
 
 #import "ILPDFKit.h"
+#import "PDFFormContainer.h"
 
 @interface ILPDFKit ()
 
 @property (nonatomic, strong) PDFViewController *pdfViewController;
 @property (nonatomic, strong) NSString *fileNameToSave;
+@property (nonatomic, assign) BOOL autoSave;
+@property (nonatomic, assign) BOOL isAnyFormChanged;
+@property (nonatomic, assign) BOOL askToSaveBeforeClose;
 
 @end
 
@@ -39,9 +43,15 @@
         
         self.fileNameToSave = fileNameToSave;
         
+        self.autoSave = [options[@"autoSave"] boolValue];
+        
+        self.askToSaveBeforeClose = [options[@"askToSaveBeforeClose"] boolValue];
+        self.isAnyFormChanged = NO;
+        
         if (pdf && pdf.length != 0) {
             @try {
                 self.pdfViewController = [[PDFViewController alloc] initWithPath:pdf];
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(formValueChanged:) name:@"ILPDFKitFormValueChangedNotitfication" object:nil];
             }
             @catch (NSException *exception) {
                 NSLog(@"%@", exception);
@@ -70,8 +80,18 @@
     }];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ILPDFKitFormValueChangedNotitfication" object:nil];
+}
+
 - (void)onClose:(id)sender {
-    [self.pdfViewController dismissViewControllerAnimated:YES completion:nil];
+    if (self.isAnyFormChanged && self.askToSaveBeforeClose) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"" message:NSLocalizedString(@"You have made changes to the form that have not been saved. Do you really want to quit?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"No", nil) otherButtonTitles:NSLocalizedString(@"Yes", nil), nil];
+        [alert show];
+    }
+    else {
+        [self.pdfViewController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)onSave:(id)sender {
@@ -111,6 +131,23 @@
     NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDir = [documentPaths objectAtIndex:0];
     return documentsDir;
+}
+
+
+- (void)formValueChanged:(NSNotification *)notification {
+    self.isAnyFormChanged = YES;
+    if (self.autoSave) {
+        [self onSave:nil];
+        self.isAnyFormChanged = NO;
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        [self.pdfViewController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 @end

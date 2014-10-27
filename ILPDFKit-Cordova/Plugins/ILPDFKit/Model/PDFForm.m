@@ -503,6 +503,7 @@
             else
             {
                 [_parent setValue:set?nil:_exportValue ForFormWithName:self.name];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"ILPDFKitFormValueChangedNotitfication" object:nil];
             }
         }
         else
@@ -517,6 +518,7 @@
         [_parent setValue:[v value] ForFormWithName:self.name];
         ((PDFFormAction*)[_actions objectForKey:@"K"]).prefix = ((PDFFormAction*)[_actions objectForKey:@"E"]).string;
         [[_actions objectForKey:@"K"] execute];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ILPDFKitFormValueChangedNotitfication" object:nil];
     }
 }
 

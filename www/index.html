@@ -36,7 +36,7 @@
             <script src="js/ilpdfkit.js"></script>
             <script>
                 document.getElementById("openPDFBtn").addEventListener("click", function() {
-                                                                       var options = {"showSaveButton" : true, "fileNameToSave" : "saved.pdf"};
+                                                                       var options = {"showSaveButton" : true, "fileNameToSave" : "saved.pdf", "autoSave" : false, "askToSaveBeforeClose" : true};
                                                                        ILPDFKit.present("pdf/test.pdf", options, function(result) {
                                                                                         
                                                                                         }, function(error) {

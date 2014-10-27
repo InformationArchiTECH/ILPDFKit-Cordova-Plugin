@@ -31,6 +31,8 @@ Possible options
 useDocumentsFolder - true/false. (If true we will serch for pdf in app's Documents folder otherwise in www folder)
 showSaveButton - true/false.
 fileNameToSave - file name of saved pdf. If not specified original pdf name used.
+autoSave - true/false
+askToSaveBeforeClose - true/false (If true and any form field changed alert massage will appear on close)
 ```
 
 Event listener for Save functionality
