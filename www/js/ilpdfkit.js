@@ -84,6 +84,8 @@ var ILPDFKit = new function() {
     
     addMethods({
                present: ["path", "options", "successCallback", "errorCallback"],
+               setFormValue : ["formName", "formValue"],
+               getFormValue : ["formName", "successCallback"],
     });
 };
 

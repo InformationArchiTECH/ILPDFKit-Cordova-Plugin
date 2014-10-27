@@ -13,5 +13,7 @@
 @interface ILPDFKit : CDVPlugin
 
 - (void)present:(CDVInvokedUrlCommand *)command;
+- (void)setFormValue:(CDVInvokedUrlCommand *)command;
+- (void)getFormValue:(CDVInvokedUrlCommand *)command;
 
 @end

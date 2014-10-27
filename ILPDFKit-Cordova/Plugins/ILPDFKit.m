@@ -133,6 +133,43 @@
     return documentsDir;
 }
 
+- (void)setFormValue:(CDVInvokedUrlCommand *)command {
+    NSString *name = [command.arguments objectAtIndex:0];
+    NSString *value = [command.arguments objectAtIndex:1];
+    [self setValue:value forFormName:name];
+}
+
+- (void)setValue:(id)value forFormName:(NSString *)name {
+    BOOL isFormFound = NO;
+    for(PDFForm *form in self.pdfViewController.document.forms) {
+        if ([form.name isEqualToString:name]) {
+            isFormFound = YES;
+            form.value = value;
+            self.isAnyFormChanged = YES;
+            break;
+        }
+    }
+    if (!isFormFound) {
+        NSLog(@"Form with name '%@' not found", name);
+    }
+}
+
+- (void)getFormValue:(CDVInvokedUrlCommand *)command {
+    NSString *name = [command.arguments objectAtIndex:0];
+    
+    id value = [self valueForFormName:name];
+    
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:value] callbackId:command.callbackId];
+}
+
+- (id)valueForFormName:(NSString *)name {
+    for(PDFForm *form in self.pdfViewController.document.forms) {
+        if ([form.name isEqualToString:name]) {
+            return form.value;
+        }
+    }
+    return nil;
+}
 
 - (void)formValueChanged:(NSNotification *)notification {
     self.isAnyFormChanged = YES;

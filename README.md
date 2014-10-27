@@ -35,6 +35,18 @@ autoSave - true/false
 askToSaveBeforeClose - true/false (If true and any form field changed alert massage will appear on close)
 ```
 
+Example how to set/get form values
+
+```javascript
+var formName = "Given Name Text Box";
+var formValue = "value";
+ILPDFKit.setFormValue(formName, formValue);
+
+ILPDFKit.getFormValue(formName, function(value) {
+    console.log(value);
+});
+```
+
 Event listener for Save functionality
 ```javascript
 ILPDFKit.addEventListener('savePdf', function(event) {
