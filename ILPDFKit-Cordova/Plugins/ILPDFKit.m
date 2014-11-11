@@ -16,6 +16,7 @@
 @property (nonatomic, assign) BOOL autoSave;
 @property (nonatomic, assign) BOOL isAnyFormChanged;
 @property (nonatomic, assign) BOOL askToSaveBeforeClose;
+@property (nonatomic, assign) BOOL backgroundMode;
 
 @end
 
@@ -48,6 +49,8 @@
         self.askToSaveBeforeClose = [options[@"askToSaveBeforeClose"] boolValue];
         self.isAnyFormChanged = NO;
         
+        self.backgroundMode = [options[@"backgroundMode"] boolValue];
+        
         if (pdf && pdf.length != 0) {
             @try {
                 self.pdfViewController = [[PDFViewController alloc] initWithPath:pdf];
@@ -60,18 +63,24 @@
                 return;
             }
             
-            UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:self.pdfViewController];
-            
-            self.pdfViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(onClose:)];
-            
-            if (showSaveButton) {
-                self.pdfViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(onSave:)];
+            if (!self.backgroundMode) {
+                UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:self.pdfViewController];
+                
+                self.pdfViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(onClose:)];
+                
+                if (showSaveButton) {
+                    self.pdfViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(onSave:)];
+                }
+                
+                [self.viewController presentViewController:navVC animated:YES completion:^{
+                    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK]
+                                                callbackId:command.callbackId];
+                }];
             }
-            
-            [self.viewController presentViewController:navVC animated:YES completion:^{
+            else {
                 [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK]
                                             callbackId:command.callbackId];
-            }];
+            }
         }
         else {
             [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Failed to open pdf"]
@@ -92,6 +101,11 @@
     else {
         [self.pdfViewController dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (void)save:(CDVInvokedUrlCommand *)command {
+    [self onSave:nil];
+    self.isAnyFormChanged = NO;
 }
 
 - (void)onSave:(id)sender {
@@ -146,6 +160,7 @@
             isFormFound = YES;
             form.value = value;
             self.isAnyFormChanged = YES;
+            [self formValueChanged:nil];
             break;
         }
     }
@@ -169,6 +184,15 @@
         }
     }
     return nil;
+}
+
+- (void)getAllForms:(CDVInvokedUrlCommand *)command {
+    NSMutableArray *forms = [[NSMutableArray alloc] init];
+    for(PDFForm *form in self.pdfViewController.document.forms) {
+        [forms addObject:@{@"name" : form.name, @"value" : form.value}];
+    }
+    
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:forms] callbackId:command.callbackId];
 }
 
 - (void)formValueChanged:(NSNotification *)notification {

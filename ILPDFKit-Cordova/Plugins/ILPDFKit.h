@@ -15,5 +15,7 @@
 - (void)present:(CDVInvokedUrlCommand *)command;
 - (void)setFormValue:(CDVInvokedUrlCommand *)command;
 - (void)getFormValue:(CDVInvokedUrlCommand *)command;
+- (void)getAllForms:(CDVInvokedUrlCommand *)command;
+- (void)save:(CDVInvokedUrlCommand *)command;
 
 @end

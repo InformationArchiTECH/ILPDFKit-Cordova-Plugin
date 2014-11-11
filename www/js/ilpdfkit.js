@@ -86,6 +86,8 @@ var ILPDFKit = new function() {
                present: ["path", "options", "successCallback", "errorCallback"],
                setFormValue : ["formName", "formValue"],
                getFormValue : ["formName", "successCallback"],
+               getAllForms : ["successCallback"],
+               save : [],
     });
 };
 

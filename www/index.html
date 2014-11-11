@@ -36,9 +36,17 @@
             <script src="js/ilpdfkit.js"></script>
             <script>
                 document.getElementById("openPDFBtn").addEventListener("click", function() {
-                                                                       var options = {"showSaveButton" : true, "fileNameToSave" : "saved.pdf", "autoSave" : false, "askToSaveBeforeClose" : true};
+                                                                       var options = {"showSaveButton" : true, "fileNameToSave" : "saved.pdf", "autoSave" : false, "askToSaveBeforeClose" : true, "backgroundMode" : true};
                                                                        ILPDFKit.present("pdf/test.pdf", options, function(result) {
+                                                                                        ILPDFKit.getAllForms(function(forms) {
+                                                                                                             for (i = 0; i < forms.length; ++i) {
+                                                                                                                var form = forms[i];
+                                                                                                                console.log(form.name + "=" + form.value);
+                                                                                                             }
+                                                                                                             });
                                                                                         ILPDFKit.setFormValue("Given Name Text Box", "value");
+                                                                                        
+                                                                                        ILPDFKit.save();
                                                                                         
                                                                                         ILPDFKit.getFormValue("Given Name Text Box", function(value) {
                                                                                                               setTimeout(function(){
