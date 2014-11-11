@@ -33,6 +33,7 @@ showSaveButton - true/false.
 fileNameToSave - file name of saved pdf. If not specified original pdf name used.
 autoSave - true/false
 askToSaveBeforeClose - true/false (If true and any form field changed alert massage will appear on close)
+backgroundMode - true/false (Present or not pdf view controller)
 ```
 
 Example how to set/get form values
@@ -45,6 +46,18 @@ ILPDFKit.setFormValue(formName, formValue);
 ILPDFKit.getFormValue(formName, function(value) {
     console.log(value);
 });
+
+ILPDFKit.getAllForms(function(forms) {
+    for (i = 0; i < forms.length; ++i) {
+        var form = forms[i];
+        console.log(form.name + "=" + form.value);
+    }
+});
+```
+
+Example how to save pdf
+```
+ILPDFKit.save();
 ```
 
 Event listener for Save functionality
