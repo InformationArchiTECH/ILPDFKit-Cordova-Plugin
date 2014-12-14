@@ -5,11 +5,11 @@ Cordova plugin for [ILPDFKit](https://github.com/iwelabs/ILPDFKit)
 
 Install
 =======
-cordova plugin add https://gennick@bitbucket.org/informationarchitech/ilpdfkit-cordova.git
+cordova plugin add https://github.com/InformationArchiTECH/ILPDFKit-Cordova-Plugin
 
 or
 
-phonegap local plugin add https://gennick@bitbucket.org/informationarchitech/ilpdfkit-cordova.git
+phonegap local plugin add https://github.com/InformationArchiTECH/ILPDFKit-Cordova-Plugin
 
 Usage
 =====
